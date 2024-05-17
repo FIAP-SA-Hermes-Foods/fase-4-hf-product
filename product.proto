@@ -1,0 +1,71 @@
+syntax = "proto3";
+option go_package = "fase-4-hf-order/product-proto";
+
+message CreateRequest {
+  string name = 1;
+  string category = 2;
+  string image = 3;
+  string description = 4;
+  float price = 5;
+  string createdAt = 6;
+  string deactivatedAt = 7;
+}
+
+message CreateResponse {
+  string uuid = 1;
+  string name = 2;
+  string category = 3;
+  string image = 4;
+  string description = 5;
+  float price = 6;
+  string createdAt = 7;
+  string deactivatedAt = 8;
+}
+
+message GetByCategoryRequest { string category = 1; }
+
+message GetBycategoryItem {
+  string uuid = 1;
+  string name = 2;
+  string category = 3;
+  string image = 4;
+  string description = 5;
+  float price = 6;
+  string createdAt = 7;
+  string deactivatedAt = 8;
+}
+
+message GetByCategoryResponse { repeated GetBycategoryItem items = 1; }
+
+message UpdateRequest {
+  string uuid = 1;
+  string name = 2;
+  string category = 3;
+  string image = 4;
+  string description = 5;
+  float price = 6;
+  string createdAt = 7;
+  string deactivatedAt = 8;
+}
+
+message UpdateResponse {
+  string uuid = 1;
+  string name = 2;
+  string category = 3;
+  string image = 4;
+  string description = 5;
+  float price = 6;
+  string createdAt = 7;
+  string deactivatedAt = 8;
+}
+
+message DeleteByUUIDRequest { string uuid = 1; }
+
+message DeleteByUUIDResponse { string message = 1; }
+
+service Product {
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc GetByCategory(GetByCategoryRequest) returns (GetByCategoryResponse);
+  rpc Update(UpdateRequest) returns (UpdateResponse);
+  rpc DeleteByUUID(DeleteByUUIDRequest) returns (DeleteByUUIDResponse);
+}
