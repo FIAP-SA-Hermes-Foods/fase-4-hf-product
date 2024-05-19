@@ -12,8 +12,8 @@ type ProductDB struct {
 	Image         string  `json:"image,omitempty"`
 	Description   string  `json:"description,omitempty"`
 	Price         float64 `json:"price,omitempty"`
-	CreatedAt     string  `json:"createdAt,omitempty"`
-	DeactivatedAt string  `json:"deactivatedAt,omitempty"`
+	CreatedAt     string  `json:"created_at,omitempty"`
+	DeactivatedAt string  `json:"deactivated_at,omitempty"`
 }
 
 type (

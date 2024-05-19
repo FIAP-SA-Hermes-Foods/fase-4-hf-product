@@ -59,7 +59,7 @@ func (p *productDB) GetProductByUUID(uuid string) (*dto.ProductDB, error) {
 
 func (p *productDB) SaveProduct(product dto.ProductDB) (*dto.ProductDB, error) {
 
-	priceString := strconv.FormatFloat(product.Price, 'f', -1, 64)
+	priceString := strconv.FormatFloat(product.Price, 'f', 2, 64)
 	putItem := map[string]*dynamodb.AttributeValue{
 		"uuid": {
 			S: aws.String(product.UUID),
