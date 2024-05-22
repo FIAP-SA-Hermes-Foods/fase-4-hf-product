@@ -7,6 +7,7 @@ import (
 	"fase-4-hf-product/internal/core/domain/entity/dto"
 	"fase-4-hf-product/internal/core/domain/repository"
 	"fase-4-hf-product/internal/core/domain/useCase"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -70,6 +71,8 @@ func (app application) SaveProduct(product dto.RequestProduct) (*dto.OutputProdu
 		return nil, err
 	}
 
+	createdAtFmt := time.Now().Format(`02-01-2006 15:04:05`)
+
 	productDB := dto.ProductDB{
 		UUID:          uuid.NewString(),
 		Name:          product.Name,
@@ -77,7 +80,7 @@ func (app application) SaveProduct(product dto.RequestProduct) (*dto.OutputProdu
 		Image:         product.Image,
 		Description:   product.Description,
 		Price:         product.Price,
-		CreatedAt:     product.CreatedAt,
+		CreatedAt:     createdAtFmt,
 		DeactivatedAt: product.DeactivatedAt,
 	}
 
@@ -148,22 +151,72 @@ func (app application) GetProductByCategory(category string) ([]dto.OutputProduc
 	return productList, nil
 }
 
-func (app application) UpdateProductByUUID(id string, product dto.RequestProduct) (*dto.OutputProduct, error) {
-	l.Infof("UpdateProductByUUIDApp: ", " | ", id, " | ", ps.MarshalString(product))
+func (app application) UpdateProductByUUID(id string, newProduct dto.RequestProduct) (*dto.OutputProduct, error) {
+	l.Infof("UpdateProductByUUIDApp: ", " | ", id, " | ", ps.MarshalString(newProduct))
 
-	if err := app.UpdateProductByUUIDUseCase(id, product); err != nil {
+	if err := app.UpdateProductByUUIDUseCase(id, newProduct); err != nil {
 		l.Errorf("UpdateProductByUUIDApp error: ", " | ", err)
 		return nil, err
 	}
 
+	product, err := app.GetProductByUUID(id)
+
+	if err != nil {
+		l.Errorf("UpdateProductByUUIDApp error: ", " | ", err)
+		return nil, err
+	}
+
+	if product == nil {
+		l.Errorf("UpdateProductByUUIDApp error: ", " | ", "product with this uuid was not found")
+		return nil, err
+	}
+
+	var (
+		name          = product.Name
+		category      = product.Category
+		image         = product.Image
+		description   = product.Description
+		price         = product.Price
+		createdAt     = product.CreatedAt
+		deactivatedAt = product.DeactivatedAt
+	)
+
+	if len(newProduct.Name) > 0 {
+		name = newProduct.Name
+	}
+
+	if len(newProduct.Category) > 0 {
+		category = newProduct.Category
+	}
+
+	if len(newProduct.Image) > 0 {
+		image = newProduct.Image
+	}
+
+	if len(newProduct.Description) > 0 {
+		description = newProduct.Description
+	}
+
+	if newProduct.Price != 0 {
+		price = newProduct.Price
+	}
+
+	if len(newProduct.CreatedAt) > 0 {
+		createdAt = newProduct.CreatedAt
+	}
+
+	if len(newProduct.DeactivatedAt) > 0 {
+		deactivatedAt = newProduct.DeactivatedAt
+	}
+
 	productDB := dto.ProductDB{
-		Name:          product.Name,
-		Category:      product.Category,
-		Image:         product.Image,
-		Description:   product.Description,
-		Price:         product.Price,
-		CreatedAt:     product.CreatedAt,
-		DeactivatedAt: product.DeactivatedAt,
+		Name:          name,
+		Category:      category,
+		Image:         image,
+		Description:   description,
+		Price:         price,
+		CreatedAt:     createdAt,
+		DeactivatedAt: deactivatedAt,
 	}
 
 	cOutDb, err := app.UpdateProductByUUIDRepository(id, productDB)

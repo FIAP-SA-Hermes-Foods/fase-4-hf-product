@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fase-4-hf-product/external/db/dynamo"
 	l "fase-4-hf-product/external/logger"
 	repositories "fase-4-hf-product/internal/adapters/driven/repositories/nosql"
@@ -8,11 +9,11 @@ import (
 	"fase-4-hf-product/internal/core/useCase"
 	grpcH "fase-4-hf-product/internal/handler/rpc"
 	cp "fase-4-hf-product/product_proto"
+	"log"
 	"net"
 	"os"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/marcos-dev88/genv"
 	"google.golang.org/grpc"
 )
@@ -33,15 +34,14 @@ func main() {
 
 	defer listener.Close()
 
-	configAws := aws.NewConfig()
-	configAws.Region = aws.String("us-east-1")
+	ctx := context.Background()
 
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		Config:            *configAws,
-		SharedConfigState: session.SharedConfigEnable,
-	}))
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion("us-east-1"))
+	if err != nil {
+		log.Fatalf("unable to load SDK config, %v", err)
+	}
 
-	db := dynamo.NewDynamoDB(sess)
+	db := dynamo.NewDynamoDB(cfg)
 
 	repo := repositories.NewProductRepository(db, os.Getenv("DB_TABLE"))
 

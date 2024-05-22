@@ -6,9 +6,11 @@ import (
 	"fase-4-hf-product/internal/core/domain/repository"
 	"strconv"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/expression"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 var _ repository.ProductRepository = (*productDB)(nil)
@@ -23,20 +25,20 @@ func NewProductRepository(database db.NoSQLDatabase, tableName string) *productD
 }
 
 func (p *productDB) GetProductByUUID(uuid string) (*dto.ProductDB, error) {
-	filter := "uuid = :value"
-	attrSearch := map[string]*dynamodb.AttributeValue{
-		":value": {
-			S: aws.String(uuid),
+	partitionKeyName := "uuid"
+
+	input := &dynamodb.QueryInput{
+		TableName:              aws.String(p.tableName),
+		KeyConditionExpression: aws.String("#pk = :value"),
+		ExpressionAttributeNames: map[string]string{
+			"#pk": partitionKeyName,
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":value": &types.AttributeValueMemberS{Value: uuid},
 		},
 	}
 
-	input := &dynamodb.ScanInput{
-		TableName:                 aws.String(p.tableName),
-		FilterExpression:          aws.String(filter),
-		ExpressionAttributeValues: attrSearch,
-	}
-
-	result, err := p.Database.Scan(input)
+	result, err := p.Database.Query(input)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +46,7 @@ func (p *productDB) GetProductByUUID(uuid string) (*dto.ProductDB, error) {
 	var productList = make([]dto.ProductDB, 0)
 	for _, item := range result.Items {
 		var pDb dto.ProductDB
-		if err := dynamodbattribute.UnmarshalMap(item, &pDb); err != nil {
+		if err := attributevalue.UnmarshalMap(item, &pDb); err != nil {
 			return nil, err
 		}
 		productList = append(productList, pDb)
@@ -60,30 +62,30 @@ func (p *productDB) GetProductByUUID(uuid string) (*dto.ProductDB, error) {
 func (p *productDB) SaveProduct(product dto.ProductDB) (*dto.ProductDB, error) {
 
 	priceString := strconv.FormatFloat(product.Price, 'f', -1, 64)
-	putItem := map[string]*dynamodb.AttributeValue{
-		"uuid": {
-			S: aws.String(product.UUID),
+	putItem := map[string]types.AttributeValue{
+		"uuid": &types.AttributeValueMemberS{
+			Value: product.UUID,
 		},
-		"name": {
-			S: aws.String(product.Name),
+		"name": &types.AttributeValueMemberS{
+			Value: product.Name,
 		},
-		"category": {
-			S: aws.String(product.Category),
+		"category": &types.AttributeValueMemberS{
+			Value: product.Category,
 		},
-		"image": {
-			S: aws.String(product.Image),
+		"image": &types.AttributeValueMemberS{
+			Value: product.Image,
 		},
-		"description": {
-			S: aws.String(product.Description),
+		"description": &types.AttributeValueMemberS{
+			Value: product.Description,
 		},
-		"price": {
-			N: aws.String(priceString),
+		"price": &types.AttributeValueMemberN{
+			Value: priceString,
 		},
-		"created_at": {
-			S: aws.String(product.CreatedAt),
+		"createdAt": &types.AttributeValueMemberS{
+			Value: product.CreatedAt,
 		},
-		"deactivated_at": {
-			S: aws.String(product.DeactivatedAt),
+		"deactivatedAt": &types.AttributeValueMemberS{
+			Value: product.DeactivatedAt,
 		},
 	}
 
@@ -98,77 +100,84 @@ func (p *productDB) SaveProduct(product dto.ProductDB) (*dto.ProductDB, error) {
 		return nil, err
 	}
 
-	var out *dto.ProductDB
+	var out dto.ProductDB
 
-	if err := dynamodbattribute.UnmarshalMap(putOut.Attributes, &out); err != nil {
+	if err := attributevalue.UnmarshalMap(putOut.Attributes, &out); err != nil {
 		return nil, err
 	}
 
-	return out, nil
+	out = dto.ProductDB{
+		UUID:          product.UUID,
+		Name:          product.Name,
+		Category:      product.Category,
+		Image:         product.Image,
+		Description:   product.Description,
+		Price:         product.Price,
+		CreatedAt:     product.CreatedAt,
+		DeactivatedAt: product.DeactivatedAt,
+	}
+
+	return &out, nil
 }
 
 func (p *productDB) UpdateProductByUUID(uuid string, product dto.ProductDB) (*dto.ProductDB, error) {
 
-	priceString := strconv.FormatFloat(product.Price, 'f', 2, 64)
+	// priceString := strconv.FormatFloat(product.Price, 'f', 2, 64)
 
-	action := "SET name = :newName, category = :newCategory, image = :newImage, description = :newDescription, price = :newPrice, created_at = :newCreated_at, deactivated_at = :newDeactivated_at"
-	key := map[string]*dynamodb.AttributeValue{
-		"uuid": {
-			S: aws.String(uuid),
-		},
-	}
-
-	updateItem := map[string]*dynamodb.AttributeValue{
-		":newName": {
-			S: aws.String(product.Name),
-		},
-		":newCategory": {
-			S: aws.String(product.Category),
-		},
-		":newImage": {
-			S: aws.String(product.Image),
-		},
-		":newDescription": {
-			S: aws.String(product.Description),
-		},
-		":newPrice": {
-			N: aws.String(priceString),
-		},
-		":newCreated_at": {
-			S: aws.String(product.CreatedAt),
-		},
-		":newDeactivated_at": {
-			S: aws.String(product.DeactivatedAt),
-		},
-	}
+	update := expression.Set(expression.Name("name"), expression.Value(product.Name))
+	update.Set(expression.Name("category"), expression.Value(product.Category))
+	update.Set(expression.Name("image"), expression.Value(product.Image))
+	update.Set(expression.Name("description"), expression.Value(product.Description))
+	update.Set(expression.Name("price"), expression.Value(product.Price))
+	update.Set(expression.Name("createdAt"), expression.Value(product.CreatedAt))
+	update.Set(expression.Name("deactivatedAt"), expression.Value(product.DeactivatedAt))
+	expr, err := expression.NewBuilder().WithUpdate(update).Build()
 
 	inputUpdateItem := &dynamodb.UpdateItemInput{
-		TableName:                 aws.String(p.tableName),
-		ExpressionAttributeValues: updateItem,
-		Key:                       key,
-		UpdateExpression:          aws.String(action),
+		TableName: aws.String(p.tableName),
+		Key: map[string]types.AttributeValue{
+			"uuid": &types.AttributeValueMemberS{
+				Value: uuid,
+			},
+		},
+		ExpressionAttributeNames:  expr.Names(),
+		ExpressionAttributeValues: expr.Values(),
+		UpdateExpression:          expr.Update(),
 	}
 
-	pOut, err := p.Database.UpdateItem(inputUpdateItem)
-
+	updateOut, err := p.Database.UpdateItem(inputUpdateItem)
+	if err != nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}
 
-	var out *dto.ProductDB
+	var out dto.ProductDB
 
-	if err := dynamodbattribute.UnmarshalMap(pOut.Attributes, &out); err != nil {
+	if err := attributevalue.UnmarshalMap(updateOut.Attributes, &out); err != nil {
 		return nil, err
 	}
 
-	return out, nil
+	out = dto.ProductDB{
+		UUID:          uuid,
+		Name:          product.Name,
+		Category:      product.Category,
+		Image:         product.Image,
+		Description:   product.Description,
+		Price:         product.Price,
+		CreatedAt:     product.CreatedAt,
+		DeactivatedAt: product.DeactivatedAt,
+	}
+
+	return &out, nil
 }
 
 func (p *productDB) GetProductByCategory(category string) ([]dto.ProductDB, error) {
 	filter := "category = :value"
-	attrSearch := map[string]*dynamodb.AttributeValue{
-		":value": {
-			S: aws.String(category),
+	attrSearch := map[string]types.AttributeValue{
+		":value": &types.AttributeValueMemberS{
+			Value: category,
 		},
 	}
 
@@ -186,7 +195,7 @@ func (p *productDB) GetProductByCategory(category string) ([]dto.ProductDB, erro
 	var productList = make([]dto.ProductDB, 0)
 	for _, item := range result.Items {
 		var pDb dto.ProductDB
-		if err := dynamodbattribute.UnmarshalMap(item, &pDb); err != nil {
+		if err := attributevalue.UnmarshalMap(item, &pDb); err != nil {
 			return nil, err
 		}
 		productList = append(productList, pDb)
@@ -200,8 +209,10 @@ func (p *productDB) GetProductByCategory(category string) ([]dto.ProductDB, erro
 }
 
 func (p *productDB) DeleteProductByUUID(uuid string) error {
-	key := map[string]*dynamodb.AttributeValue{
-		"uuid": {S: aws.String("uuid")},
+	key := map[string]types.AttributeValue{
+		"uuid": &types.AttributeValueMemberS{
+			Value: uuid,
+		},
 	}
 
 	inputUpdateItem := &dynamodb.DeleteItemInput{

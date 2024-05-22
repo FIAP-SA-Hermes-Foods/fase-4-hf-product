@@ -11,8 +11,8 @@ import (
 	"os/exec"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 // go test -v -count=1 -failfast -cover -run ^Test_GetProductByUUID$
@@ -59,22 +59,22 @@ func Test_GetProductByUUID(t *testing.T) {
 			},
 			mockDB: &mocks.MockDbNoSQL{
 				WantResultScan: &dynamodb.ScanOutput{
-					Items: []map[string]*dynamodb.AttributeValue{
+					Items: []map[string]types.AttributeValue{
 						{
-							"uuid": {
-								S: aws.String("a0all-b000-caa000-daa00"),
+							"uuid": &types.AttributeValueMemberS{
+								Value: "a0all-b000-caa000-daa00",
 							},
-							"name": {
-								S: aws.String("some_name"),
+							"name": &types.AttributeValueMemberS{
+								Value: "some_name",
 							},
-							"cpf": {
-								S: aws.String("000000000"),
+							"cpf": &types.AttributeValueMemberS{
+								Value: "000000000",
 							},
-							"email": {
-								S: aws.String("someemail@some.com"),
+							"email": &types.AttributeValueMemberS{
+								Value: "someemail@some.com",
 							},
-							"created_at": {
-								S: aws.String("2001-01-01 15:30:20"),
+							"created_at": &types.AttributeValueMemberS{
+								Value: "2001-01-01 15:30:20",
 							},
 						},
 					},
@@ -149,22 +149,22 @@ func Test_GetProductByCategory(t *testing.T) {
 			},
 			mockDB: &mocks.MockDbNoSQL{
 				WantResultScan: &dynamodb.ScanOutput{
-					Items: []map[string]*dynamodb.AttributeValue{
+					Items: []map[string]types.AttributeValue{
 						{
-							"uuid": {
-								S: aws.String("a0all-b000-caa000-daa00"),
+							"uuid": &types.AttributeValueMemberS{
+								Value: "a0all-b000-caa000-daa00",
 							},
-							"name": {
-								S: aws.String("some_name"),
+							"name": &types.AttributeValueMemberS{
+								Value: "some_name",
 							},
-							"cpf": {
-								S: aws.String("000000000"),
+							"cpf": &types.AttributeValueMemberS{
+								Value: "000000000",
 							},
-							"email": {
-								S: aws.String("someemail@some.com"),
+							"email": &types.AttributeValueMemberS{
+								Value: "someemail@some.com",
 							},
-							"created_at": {
-								S: aws.String("2001-01-01 15:30:20"),
+							"created_at": &types.AttributeValueMemberS{
+								Value: "2001-01-01 15:30:20",
 							},
 						},
 					},
@@ -363,22 +363,22 @@ func Test_DeleteProductByUUID(t *testing.T) {
 			ctx: ctx,
 			mockDB: &mocks.MockDbNoSQL{
 				WantResultScan: &dynamodb.ScanOutput{
-					Items: []map[string]*dynamodb.AttributeValue{
+					Items: []map[string]types.AttributeValue{
 						{
-							"uuid": {
-								S: aws.String("a0all-b000-caa000-daa00"),
+							"uuid": &types.AttributeValueMemberS{
+								Value: "a0all-b000-caa000-daa00",
 							},
-							"name": {
-								S: aws.String("some_name"),
+							"name": &types.AttributeValueMemberS{
+								Value: "some_name",
 							},
-							"cpf": {
-								S: aws.String("000000000"),
+							"cpf": &types.AttributeValueMemberS{
+								Value: "000000000",
 							},
-							"email": {
-								S: aws.String("someemail@some.com"),
+							"email": &types.AttributeValueMemberS{
+								Value: "someemail@some.com",
 							},
-							"created_at": {
-								S: aws.String("2001-01-01 15:30:20"),
+							"created_at": &types.AttributeValueMemberS{
+								Value: "2001-01-01 15:30:20",
 							},
 						},
 					},

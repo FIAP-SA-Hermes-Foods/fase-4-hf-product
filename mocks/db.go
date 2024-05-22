@@ -3,7 +3,7 @@ package mocks
 import (
 	"strings"
 
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
 // Mock DB NoSQL
@@ -12,6 +12,7 @@ type MockDbNoSQL struct {
 	WantResultPutItem    *dynamodb.PutItemOutput
 	WantResultUpdateItem *dynamodb.UpdateItemOutput
 	WantResultDeleteItem *dynamodb.DeleteItemOutput
+	WantResultQuery      *dynamodb.QueryOutput
 	WantErr              error
 }
 
@@ -41,4 +42,11 @@ func (m MockDbNoSQL) DeleteItem(input *dynamodb.DeleteItemInput) (*dynamodb.Dele
 		return nil, m.WantErr
 	}
 	return m.WantResultDeleteItem, nil
+}
+
+func (m MockDbNoSQL) Query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, error) {
+	if m.WantErr != nil && strings.EqualFold("errQuery", m.WantErr.Error()) {
+		return nil, m.WantErr
+	}
+	return m.WantResultQuery, nil
 }
