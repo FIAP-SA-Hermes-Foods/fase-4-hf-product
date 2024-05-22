@@ -24,7 +24,7 @@ func (h *handlerGRPC) Handler() *handlerGRPC {
 	return h
 }
 
-func (h *handlerGRPC) Create(ctx context.Context, req *cp.CreateRequest) (*cp.CreateResponse, error) {
+func (h *handlerGRPC) CreateProduct(ctx context.Context, req *cp.CreateProductRequest) (*cp.CreateProductResponse, error) {
 	input := dto.RequestProduct{
 		Name:          req.Name,
 		Category:      req.Category,
@@ -45,7 +45,7 @@ func (h *handlerGRPC) Create(ctx context.Context, req *cp.CreateRequest) (*cp.Cr
 		return nil, nil
 	}
 
-	out := &cp.CreateResponse{
+	out := &cp.CreateProductResponse{
 		Uuid:          c.UUID,
 		Name:          c.Name,
 		Category:      c.Category,
@@ -59,7 +59,7 @@ func (h *handlerGRPC) Create(ctx context.Context, req *cp.CreateRequest) (*cp.Cr
 	return out, nil
 }
 
-func (h *handlerGRPC) GetByCategory(ctx context.Context, req *cp.GetByCategoryRequest) (*cp.GetByCategoryResponse, error) {
+func (h *handlerGRPC) GetProductByCategory(ctx context.Context, req *cp.GetProductByCategoryRequest) (*cp.GetProductByCategoryResponse, error) {
 
 	c, err := h.app.GetProductByCategory(req.Category)
 
@@ -71,10 +71,10 @@ func (h *handlerGRPC) GetByCategory(ctx context.Context, req *cp.GetByCategoryRe
 		return nil, nil
 	}
 
-	outList := make([]*cp.GetBycategoryItem, 0)
+	outList := make([]*cp.GetProductByCategoryItem, 0)
 
 	for i := range c {
-		item := &cp.GetBycategoryItem{
+		item := &cp.GetProductByCategoryItem{
 			Uuid:          c[i].UUID,
 			Name:          c[i].Name,
 			Category:      c[i].Category,
@@ -88,14 +88,14 @@ func (h *handlerGRPC) GetByCategory(ctx context.Context, req *cp.GetByCategoryRe
 		outList = append(outList, item)
 	}
 
-	out := &cp.GetByCategoryResponse{
+	out := &cp.GetProductByCategoryResponse{
 		Items: outList,
 	}
 
 	return out, nil
 }
 
-func (h *handlerGRPC) Update(ctx context.Context, req *cp.UpdateRequest) (*cp.UpdateResponse, error) {
+func (h *handlerGRPC) UpdateProduct(ctx context.Context, req *cp.UpdateProductRequest) (*cp.UpdateProductResponse, error) {
 	input := dto.RequestProduct{
 		Name:          req.Name,
 		Category:      req.Category,
@@ -116,7 +116,7 @@ func (h *handlerGRPC) Update(ctx context.Context, req *cp.UpdateRequest) (*cp.Up
 		return nil, nil
 	}
 
-	out := &cp.UpdateResponse{
+	out := &cp.UpdateProductResponse{
 		Uuid:          c.UUID,
 		Name:          c.Name,
 		Category:      c.Category,
@@ -131,13 +131,13 @@ func (h *handlerGRPC) Update(ctx context.Context, req *cp.UpdateRequest) (*cp.Up
 
 }
 
-func (h *handlerGRPC) DeleteByUUID(ctx context.Context, req *cp.DeleteByUUIDRequest) (*cp.DeleteByUUIDResponse, error) {
+func (h *handlerGRPC) DeleteProductByUUID(ctx context.Context, req *cp.DeleteProductByUUIDRequest) (*cp.DeleteProductByUUIDResponse, error) {
 
 	if err := h.app.DeleteProductByUUID(req.Uuid); err != nil {
 		return nil, err
 	}
 
-	out := &cp.DeleteByUUIDResponse{
+	out := &cp.DeleteProductByUUIDResponse{
 		Message: "OK",
 	}
 

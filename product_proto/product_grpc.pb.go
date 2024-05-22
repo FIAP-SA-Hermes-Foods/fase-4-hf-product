@@ -22,10 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	GetByCategory(ctx context.Context, in *GetByCategoryRequest, opts ...grpc.CallOption) (*GetByCategoryResponse, error)
-	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
-	DeleteByUUID(ctx context.Context, in *DeleteByUUIDRequest, opts ...grpc.CallOption) (*DeleteByUUIDResponse, error)
+	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	GetProductByCategory(ctx context.Context, in *GetProductByCategoryRequest, opts ...grpc.CallOption) (*GetProductByCategoryResponse, error)
+	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error)
+	DeleteProductByUUID(ctx context.Context, in *DeleteProductByUUIDRequest, opts ...grpc.CallOption) (*DeleteProductByUUIDResponse, error)
 }
 
 type productClient struct {
@@ -36,36 +36,36 @@ func NewProductClient(cc grpc.ClientConnInterface) ProductClient {
 	return &productClient{cc}
 }
 
-func (c *productClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/Product/Create", in, out, opts...)
+func (c *productClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
+	err := c.cc.Invoke(ctx, "/Product/CreateProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *productClient) GetByCategory(ctx context.Context, in *GetByCategoryRequest, opts ...grpc.CallOption) (*GetByCategoryResponse, error) {
-	out := new(GetByCategoryResponse)
-	err := c.cc.Invoke(ctx, "/Product/GetByCategory", in, out, opts...)
+func (c *productClient) GetProductByCategory(ctx context.Context, in *GetProductByCategoryRequest, opts ...grpc.CallOption) (*GetProductByCategoryResponse, error) {
+	out := new(GetProductByCategoryResponse)
+	err := c.cc.Invoke(ctx, "/Product/GetProductByCategory", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *productClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
-	out := new(UpdateResponse)
-	err := c.cc.Invoke(ctx, "/Product/Update", in, out, opts...)
+func (c *productClient) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error) {
+	out := new(UpdateProductResponse)
+	err := c.cc.Invoke(ctx, "/Product/UpdateProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *productClient) DeleteByUUID(ctx context.Context, in *DeleteByUUIDRequest, opts ...grpc.CallOption) (*DeleteByUUIDResponse, error) {
-	out := new(DeleteByUUIDResponse)
-	err := c.cc.Invoke(ctx, "/Product/DeleteByUUID", in, out, opts...)
+func (c *productClient) DeleteProductByUUID(ctx context.Context, in *DeleteProductByUUIDRequest, opts ...grpc.CallOption) (*DeleteProductByUUIDResponse, error) {
+	out := new(DeleteProductByUUIDResponse)
+	err := c.cc.Invoke(ctx, "/Product/DeleteProductByUUID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,10 +76,10 @@ func (c *productClient) DeleteByUUID(ctx context.Context, in *DeleteByUUIDReques
 // All implementations must embed UnimplementedProductServer
 // for forward compatibility
 type ProductServer interface {
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	GetByCategory(context.Context, *GetByCategoryRequest) (*GetByCategoryResponse, error)
-	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
-	DeleteByUUID(context.Context, *DeleteByUUIDRequest) (*DeleteByUUIDResponse, error)
+	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
+	GetProductByCategory(context.Context, *GetProductByCategoryRequest) (*GetProductByCategoryResponse, error)
+	UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error)
+	DeleteProductByUUID(context.Context, *DeleteProductByUUIDRequest) (*DeleteProductByUUIDResponse, error)
 	mustEmbedUnimplementedProductServer()
 }
 
@@ -87,17 +87,17 @@ type ProductServer interface {
 type UnimplementedProductServer struct {
 }
 
-func (UnimplementedProductServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (UnimplementedProductServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
 }
-func (UnimplementedProductServer) GetByCategory(context.Context, *GetByCategoryRequest) (*GetByCategoryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetByCategory not implemented")
+func (UnimplementedProductServer) GetProductByCategory(context.Context, *GetProductByCategoryRequest) (*GetProductByCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductByCategory not implemented")
 }
-func (UnimplementedProductServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+func (UnimplementedProductServer) UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
 }
-func (UnimplementedProductServer) DeleteByUUID(context.Context, *DeleteByUUIDRequest) (*DeleteByUUIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteByUUID not implemented")
+func (UnimplementedProductServer) DeleteProductByUUID(context.Context, *DeleteProductByUUIDRequest) (*DeleteProductByUUIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProductByUUID not implemented")
 }
 func (UnimplementedProductServer) mustEmbedUnimplementedProductServer() {}
 
@@ -112,74 +112,74 @@ func RegisterProductServer(s grpc.ServiceRegistrar, srv ProductServer) {
 	s.RegisterService(&Product_ServiceDesc, srv)
 }
 
-func _Product_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRequest)
+func _Product_CreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServer).Create(ctx, in)
+		return srv.(ProductServer).CreateProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Product/Create",
+		FullMethod: "/Product/CreateProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServer).Create(ctx, req.(*CreateRequest))
+		return srv.(ProductServer).CreateProduct(ctx, req.(*CreateProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Product_GetByCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetByCategoryRequest)
+func _Product_GetProductByCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductByCategoryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServer).GetByCategory(ctx, in)
+		return srv.(ProductServer).GetProductByCategory(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Product/GetByCategory",
+		FullMethod: "/Product/GetProductByCategory",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServer).GetByCategory(ctx, req.(*GetByCategoryRequest))
+		return srv.(ProductServer).GetProductByCategory(ctx, req.(*GetProductByCategoryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Product_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRequest)
+func _Product_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProductRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServer).Update(ctx, in)
+		return srv.(ProductServer).UpdateProduct(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Product/Update",
+		FullMethod: "/Product/UpdateProduct",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServer).Update(ctx, req.(*UpdateRequest))
+		return srv.(ProductServer).UpdateProduct(ctx, req.(*UpdateProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Product_DeleteByUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteByUUIDRequest)
+func _Product_DeleteProductByUUID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProductByUUIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ProductServer).DeleteByUUID(ctx, in)
+		return srv.(ProductServer).DeleteProductByUUID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Product/DeleteByUUID",
+		FullMethod: "/Product/DeleteProductByUUID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductServer).DeleteByUUID(ctx, req.(*DeleteByUUIDRequest))
+		return srv.(ProductServer).DeleteProductByUUID(ctx, req.(*DeleteProductByUUIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -192,20 +192,20 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ProductServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _Product_Create_Handler,
+			MethodName: "CreateProduct",
+			Handler:    _Product_CreateProduct_Handler,
 		},
 		{
-			MethodName: "GetByCategory",
-			Handler:    _Product_GetByCategory_Handler,
+			MethodName: "GetProductByCategory",
+			Handler:    _Product_GetProductByCategory_Handler,
 		},
 		{
-			MethodName: "Update",
-			Handler:    _Product_Update_Handler,
+			MethodName: "UpdateProduct",
+			Handler:    _Product_UpdateProduct_Handler,
 		},
 		{
-			MethodName: "DeleteByUUID",
-			Handler:    _Product_DeleteByUUID_Handler,
+			MethodName: "DeleteProductByUUID",
+			Handler:    _Product_DeleteProductByUUID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
