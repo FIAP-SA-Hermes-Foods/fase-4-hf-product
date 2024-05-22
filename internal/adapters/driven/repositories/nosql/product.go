@@ -122,8 +122,6 @@ func (p *productDB) SaveProduct(product dto.ProductDB) (*dto.ProductDB, error) {
 
 func (p *productDB) UpdateProductByUUID(uuid string, product dto.ProductDB) (*dto.ProductDB, error) {
 
-	// priceString := strconv.FormatFloat(product.Price, 'f', 2, 64)
-
 	update := expression.Set(expression.Name("name"), expression.Value(product.Name))
 	update.Set(expression.Name("category"), expression.Value(product.Category))
 	update.Set(expression.Name("image"), expression.Value(product.Image))
