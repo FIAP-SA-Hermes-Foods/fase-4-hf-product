@@ -13,11 +13,11 @@ import (
 )
 
 type Application interface {
-	GetProductByUUID(uuid string) (*dto.OutputProduct, error)
+	GetProductByID(uuid string) (*dto.OutputProduct, error)
 	SaveProduct(reqProduct dto.RequestProduct) (*dto.OutputProduct, error)
 	GetProductByCategory(category string) ([]dto.OutputProduct, error)
-	UpdateProductByUUID(uuid string, product dto.RequestProduct) (*dto.OutputProduct, error)
-	DeleteProductByUUID(uuid string) error
+	UpdateProductByID(uuid string, product dto.RequestProduct) (*dto.OutputProduct, error)
+	DeleteProductByID(uuid string) error
 }
 
 type application struct {
@@ -29,22 +29,22 @@ func NewApplication(productRepo repository.ProductRepository, productUC useCase.
 	return application{productRepo: productRepo, productUC: productUC}
 }
 
-func (app application) GetProductByUUID(uuid string) (*dto.OutputProduct, error) {
-	l.Infof("GetProductByUUIDApp: ", " | ", uuid)
-	if err := app.GetProductByUUIDUseCase(uuid); err != nil {
-		l.Errorf("GetProductByUUIDApp error: ", " | ", err)
+func (app application) GetProductByID(uuid string) (*dto.OutputProduct, error) {
+	l.Infof("GetProductByIDApp: ", " | ", uuid)
+	if err := app.GetProductByIDUseCase(uuid); err != nil {
+		l.Errorf("GetProductByIDApp error: ", " | ", err)
 		return nil, err
 	}
 
-	cOutDb, err := app.GetProductByUUIDRepository(uuid)
+	cOutDb, err := app.GetProductByIDRepository(uuid)
 
 	if err != nil {
-		l.Errorf("GetProductByUUIDApp error: ", " | ", err)
+		l.Errorf("GetProductByIDApp error: ", " | ", err)
 		return nil, err
 	}
 
 	if cOutDb == nil {
-		l.Infof("GetProductByUUIDApp output: ", " | ", cOutDb)
+		l.Infof("GetProductByIDApp output: ", " | ", cOutDb)
 		return nil, nil
 	}
 
@@ -59,7 +59,7 @@ func (app application) GetProductByUUID(uuid string) (*dto.OutputProduct, error)
 		DeactivatedAt: cOutDb.DeactivatedAt,
 	}
 
-	l.Infof("GetProductByUUIDApp output: ", " | ", ps.MarshalString(out))
+	l.Infof("GetProductByIDApp output: ", " | ", ps.MarshalString(out))
 	return out, err
 }
 
@@ -151,23 +151,23 @@ func (app application) GetProductByCategory(category string) ([]dto.OutputProduc
 	return productList, nil
 }
 
-func (app application) UpdateProductByUUID(id string, newProduct dto.RequestProduct) (*dto.OutputProduct, error) {
-	l.Infof("UpdateProductByUUIDApp: ", " | ", id, " | ", ps.MarshalString(newProduct))
+func (app application) UpdateProductByID(id string, newProduct dto.RequestProduct) (*dto.OutputProduct, error) {
+	l.Infof("UpdateProductByIDApp: ", " | ", id, " | ", ps.MarshalString(newProduct))
 
-	if err := app.UpdateProductByUUIDUseCase(id, newProduct); err != nil {
-		l.Errorf("UpdateProductByUUIDApp error: ", " | ", err)
+	if err := app.UpdateProductByIDUseCase(id, newProduct); err != nil {
+		l.Errorf("UpdateProductByIDApp error: ", " | ", err)
 		return nil, err
 	}
 
-	product, err := app.GetProductByUUID(id)
+	product, err := app.GetProductByID(id)
 
 	if err != nil {
-		l.Errorf("UpdateProductByUUIDApp error: ", " | ", err)
+		l.Errorf("UpdateProductByIDApp error: ", " | ", err)
 		return nil, err
 	}
 
 	if product == nil {
-		l.Errorf("UpdateProductByUUIDApp error: ", " | ", "product with this uuid was not found")
+		l.Errorf("UpdateProductByIDApp error: ", " | ", "product with this uuid was not found")
 		return nil, err
 	}
 
@@ -219,15 +219,15 @@ func (app application) UpdateProductByUUID(id string, newProduct dto.RequestProd
 		DeactivatedAt: deactivatedAt,
 	}
 
-	cOutDb, err := app.UpdateProductByUUIDRepository(id, productDB)
+	cOutDb, err := app.UpdateProductByIDRepository(id, productDB)
 
 	if err != nil {
-		l.Errorf("UpdateProductByUUIDApp error: ", " | ", err)
+		l.Errorf("UpdateProductByIDApp error: ", " | ", err)
 		return nil, err
 	}
 
 	if cOutDb == nil {
-		l.Infof("UpdateProductByUUIDApp output: ", " | ", nil)
+		l.Infof("UpdateProductByIDApp output: ", " | ", nil)
 		return nil, nil
 	}
 
@@ -242,31 +242,31 @@ func (app application) UpdateProductByUUID(id string, newProduct dto.RequestProd
 		DeactivatedAt: cOutDb.DeactivatedAt,
 	}
 
-	l.Infof("UpdateProductByUUIDApp output: ", " | ", ps.MarshalString(out))
+	l.Infof("UpdateProductByIDApp output: ", " | ", ps.MarshalString(out))
 	return out, nil
 }
 
-func (app application) DeleteProductByUUID(id string) error {
-	l.Infof("DeleteProductByUUIDApp: ", " | ", id)
+func (app application) DeleteProductByID(id string) error {
+	l.Infof("DeleteProductByIDApp: ", " | ", id)
 
-	pByUUID, err := app.GetProductByUUID(id)
+	pByID, err := app.GetProductByID(id)
 
 	if err != nil {
-		l.Errorf("DeleteProductByUUIDApp error: ", " | ", err)
+		l.Errorf("DeleteProductByIDApp error: ", " | ", err)
 		return err
 	}
 
-	if pByUUID == nil {
+	if pByID == nil {
 		productNullErr := errors.New("was not found any product with this id")
-		l.Infof("DeleteProductByUUIDApp output: ", " | ", productNullErr)
+		l.Infof("DeleteProductByIDApp output: ", " | ", productNullErr)
 		return productNullErr
 	}
 
-	if err := app.DeleteProductByUUIDUseCase(id); err != nil {
-		l.Errorf("DeleteProductByUUIDApp error: ", " | ", err)
+	if err := app.DeleteProductByIDUseCase(id); err != nil {
+		l.Errorf("DeleteProductByIDApp error: ", " | ", err)
 		return err
 	}
 
-	l.Infof("DeleteProductByUUIDApp output: ", " | ", nil)
-	return app.DeleteProductByUUIDRepository(id)
+	l.Infof("DeleteProductByIDApp output: ", " | ", nil)
+	return app.DeleteProductByIDRepository(id)
 }

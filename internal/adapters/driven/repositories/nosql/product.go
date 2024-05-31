@@ -24,7 +24,7 @@ func NewProductRepository(database db.NoSQLDatabase, tableName string) *productD
 	return &productDB{Database: database, tableName: tableName}
 }
 
-func (p *productDB) GetProductByUUID(uuid string) (*dto.ProductDB, error) {
+func (p *productDB) GetProductByID(uuid string) (*dto.ProductDB, error) {
 	partitionKeyName := "uuid"
 
 	input := &dynamodb.QueryInput{
@@ -120,7 +120,7 @@ func (p *productDB) SaveProduct(product dto.ProductDB) (*dto.ProductDB, error) {
 	return &out, nil
 }
 
-func (p *productDB) UpdateProductByUUID(uuid string, product dto.ProductDB) (*dto.ProductDB, error) {
+func (p *productDB) UpdateProductByID(uuid string, product dto.ProductDB) (*dto.ProductDB, error) {
 
 	update := expression.Set(expression.Name("name"), expression.Value(product.Name))
 	update.Set(expression.Name("category"), expression.Value(product.Category))
@@ -206,7 +206,7 @@ func (p *productDB) GetProductByCategory(category string) ([]dto.ProductDB, erro
 	return nil, nil
 }
 
-func (p *productDB) DeleteProductByUUID(uuid string) error {
+func (p *productDB) DeleteProductByID(uuid string) error {
 	key := map[string]types.AttributeValue{
 		"uuid": &types.AttributeValueMemberS{
 			Value: uuid,

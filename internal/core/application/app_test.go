@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
-// go test -v -count=1 -failfast -run ^Test_GetProductByUUID$
-func Test_GetProductByUUID(t *testing.T) {
+// go test -v -count=1 -failfast -run ^Test_GetProductByID$
+func Test_GetProductByID(t *testing.T) {
 	type args struct {
 		uuid string
 	}
@@ -52,7 +52,7 @@ func Test_GetProductByUUID(t *testing.T) {
 				uuid: "10000000",
 			},
 			mockRepository: mocks.MockProductRepository{
-				WantOutNull: "nilGetProductByUUID",
+				WantOutNull: "nilGetProductByID",
 				WantOut:     nil,
 				WantErr:     nil,
 			},
@@ -73,7 +73,7 @@ func Test_GetProductByUUID(t *testing.T) {
 			},
 			mockRepository: mocks.MockProductRepository{
 				WantOut: nil,
-				WantErr: errors.New("errGetProductByUUID"),
+				WantErr: errors.New("errGetProductByID"),
 			},
 			mockUseCase: mocks.MockProductUseCase{
 				WantErr: nil,
@@ -91,7 +91,7 @@ func Test_GetProductByUUID(t *testing.T) {
 				WantErr: nil,
 			},
 			mockUseCase: mocks.MockProductUseCase{
-				WantErr: errors.New("errGetProductByUUID"),
+				WantErr: errors.New("errGetProductByID"),
 			},
 			wantOut:       dto.OutputProduct{},
 			isWantedError: true,
@@ -102,7 +102,7 @@ func Test_GetProductByUUID(t *testing.T) {
 		app := NewApplication(tc.mockRepository, tc.mockUseCase)
 		t.Run(tc.name, func(*testing.T) {
 
-			out, err := app.GetProductByUUID(tc.args.uuid)
+			out, err := app.GetProductByID(tc.args.uuid)
 
 			if (!tc.isWantedError) && err != nil {
 				log.Panicf("unexpected error: %v", err)
@@ -248,7 +248,7 @@ func Test_SaveProduct(t *testing.T) {
 				},
 			},
 			mockRepository: mocks.MockProductRepository{
-				WantOutNull: "nilGetProductByUUID",
+				WantOutNull: "nilGetProductByID",
 				WantOut: &dto.ProductDB{
 					UUID:      "001",
 					Name:      "someUser",
@@ -365,7 +365,7 @@ func Test_SaveProduct(t *testing.T) {
 			isWantedError: true,
 		},
 		{
-			name: "error_getUserByUUID",
+			name: "error_getUserByID",
 			args: args{
 				req: dto.RequestProduct{
 					UUID:      "001",
@@ -375,7 +375,7 @@ func Test_SaveProduct(t *testing.T) {
 			},
 			mockRepository: mocks.MockProductRepository{
 				WantOut: nil,
-				WantErr: errors.New("errGetProductByUUID"),
+				WantErr: errors.New("errGetProductByID"),
 			},
 			mockUseCase: mocks.MockProductUseCase{
 				WantErr: nil,
@@ -405,8 +405,8 @@ func Test_SaveProduct(t *testing.T) {
 	}
 }
 
-// go test -v -count=1 -failfast -run ^Test_UpdateProductByUUID$
-func Test_UpdateProductByUUID(t *testing.T) {
+// go test -v -count=1 -failfast -run ^Test_UpdateProductByID$
+func Test_UpdateProductByID(t *testing.T) {
 	type args struct {
 		uuid string
 		req  dto.RequestProduct
@@ -431,7 +431,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 				},
 			},
 			mockRepository: mocks.MockProductRepository{
-				WantOutNull: "nilGetProductByUUID",
+				WantOutNull: "nilGetProductByID",
 				WantOut: &dto.ProductDB{
 					UUID:      "001",
 					Name:      "someUser",
@@ -486,7 +486,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 				WantErr: nil,
 			},
 			mockUseCase: mocks.MockProductUseCase{
-				WantErr: errors.New("errUpdateProductByUUID"),
+				WantErr: errors.New("errUpdateProductByID"),
 			},
 			wantOut: dto.OutputProduct{
 				UUID:      "001",
@@ -519,7 +519,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 			isWantedError: true,
 		},
 		{
-			name: "error_UpdateProductByUUID",
+			name: "error_UpdateProductByID",
 			args: args{
 				req: dto.RequestProduct{
 					UUID:      "001",
@@ -529,7 +529,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 			},
 			mockRepository: mocks.MockProductRepository{
 				WantOut: nil,
-				WantErr: errors.New("errUpdateProductByUUID"),
+				WantErr: errors.New("errUpdateProductByID"),
 			},
 			mockUseCase: mocks.MockProductUseCase{
 				WantErr: nil,
@@ -546,7 +546,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 	for _, tc := range tests {
 		app := NewApplication(tc.mockRepository, tc.mockUseCase)
 		t.Run(tc.name, func(*testing.T) {
-			out, err := app.UpdateProductByUUID(tc.args.uuid, tc.args.req)
+			out, err := app.UpdateProductByID(tc.args.uuid, tc.args.req)
 
 			if (!tc.isWantedError) && err != nil {
 				log.Panicf("unexpected error: %v", err)
@@ -559,8 +559,8 @@ func Test_UpdateProductByUUID(t *testing.T) {
 	}
 }
 
-// go test -v -count=1 -failfast -run ^Test_DeleteProductByUUID$
-func Test_DeleteProductByUUID(t *testing.T) {
+// go test -v -count=1 -failfast -run ^Test_DeleteProductByID$
+func Test_DeleteProductByID(t *testing.T) {
 	type args struct {
 		uuid string
 	}
@@ -597,7 +597,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 			},
 			mockRepository: mocks.MockProductRepository{
 				WantOut: nil,
-				WantErr: errors.New("errDeleteProductByUUID"),
+				WantErr: errors.New("errDeleteProductByID"),
 			},
 			mockUseCase: mocks.MockProductUseCase{
 				WantErr: nil,
@@ -614,7 +614,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 				WantErr: nil,
 			},
 			mockUseCase: mocks.MockProductUseCase{
-				WantErr: errors.New("errDeleteProductByUUID"),
+				WantErr: errors.New("errDeleteProductByID"),
 			},
 			isWantedError: true,
 		},
@@ -624,7 +624,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 		app := NewApplication(tc.mockRepository, tc.mockUseCase)
 		t.Run(tc.name, func(*testing.T) {
 
-			err := app.DeleteProductByUUID(tc.args.uuid)
+			err := app.DeleteProductByID(tc.args.uuid)
 
 			if (!tc.isWantedError) && err != nil {
 				log.Panicf("unexpected error: %v", err)

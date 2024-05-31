@@ -15,13 +15,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-// go test -v -count=1 -failfast -cover -run ^Test_GetProductByUUID$
-func Test_GetProductByUUID(t *testing.T) {
+// go test -v -count=1 -failfast -cover -run ^Test_GetProductByID$
+func Test_GetProductByID(t *testing.T) {
 	printArt()
 	ctx := context.Background()
 
 	type args struct {
-		ProductUUID string
+		ProductID string
 	}
 
 	tests := []struct {
@@ -35,7 +35,7 @@ func Test_GetProductByUUID(t *testing.T) {
 		{
 			name: "err_scanning_item",
 			args: args{
-				ProductUUID: "",
+				ProductID: "",
 			},
 			ctx:        ctx,
 			WantOutput: &dto.ProductDB{},
@@ -50,7 +50,7 @@ func Test_GetProductByUUID(t *testing.T) {
 		{
 			name: "sucess",
 			args: args{
-				ProductUUID: "",
+				ProductID: "",
 			},
 			ctx: ctx,
 			WantOutput: &dto.ProductDB{
@@ -90,7 +90,7 @@ func Test_GetProductByUUID(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			repo := NewProductRepository(tc.mockDB, "")
 
-			out, err := repo.GetProductByUUID(tc.args.ProductUUID)
+			out, err := repo.GetProductByID(tc.args.ProductID)
 
 			if (!tc.isWantError) && err != nil {
 				t.Errorf("was not suppose to have an error here and %v got", err)
@@ -257,8 +257,8 @@ func Test_SaveProduct(t *testing.T) {
 	}
 }
 
-// go test -v -count=1 -failfast -cover -run ^Test_UpdateProductByUUID$
-func Test_UpdateProductByUUID(t *testing.T) {
+// go test -v -count=1 -failfast -cover -run ^Test_UpdateProductByID$
+func Test_UpdateProductByID(t *testing.T) {
 	printArt()
 	ctx := context.Background()
 
@@ -311,7 +311,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			repo := NewProductRepository(tc.mockDB, "")
 
-			out, err := repo.UpdateProductByUUID(tc.args.uuid, tc.args.product)
+			out, err := repo.UpdateProductByID(tc.args.uuid, tc.args.product)
 
 			if (!tc.isWantError) && err != nil {
 				t.Errorf("was not suppose to have an error here and %v got", err)
@@ -325,13 +325,13 @@ func Test_UpdateProductByUUID(t *testing.T) {
 	}
 }
 
-// go test -v -count=1 -failfast -cover -run ^Test_DeleteProductByUUID$
-func Test_DeleteProductByUUID(t *testing.T) {
+// go test -v -count=1 -failfast -cover -run ^Test_DeleteProductByID$
+func Test_DeleteProductByID(t *testing.T) {
 	printArt()
 	ctx := context.Background()
 
 	type args struct {
-		ProductUUID string
+		ProductID string
 	}
 
 	tests := []struct {
@@ -344,7 +344,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 		{
 			name: "err_scanning_item",
 			args: args{
-				ProductUUID: "",
+				ProductID: "",
 			},
 			ctx: ctx,
 			mockDB: &mocks.MockDbNoSQL{
@@ -358,7 +358,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 		{
 			name: "sucess",
 			args: args{
-				ProductUUID: "",
+				ProductID: "",
 			},
 			ctx: ctx,
 			mockDB: &mocks.MockDbNoSQL{
@@ -394,7 +394,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			repo := NewProductRepository(tc.mockDB, "")
 
-			err := repo.DeleteProductByUUID(tc.args.ProductUUID)
+			err := repo.DeleteProductByID(tc.args.ProductID)
 
 			if (!tc.isWantError) && err != nil {
 				t.Errorf("was not suppose to have an error here and %v got", err)

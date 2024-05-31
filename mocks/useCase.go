@@ -10,8 +10,8 @@ type MockProductUseCase struct {
 	WantErr     error
 }
 
-func (m MockProductUseCase) GetProductByUUID(cpf string) error {
-	if m.WantErr != nil && strings.EqualFold("errGetProductByUUID", m.WantErr.Error()) {
+func (m MockProductUseCase) GetProductByID(cpf string) error {
+	if m.WantErr != nil && strings.EqualFold("errGetProductByID", m.WantErr.Error()) {
 		return m.WantErr
 	}
 	return nil
@@ -31,15 +31,15 @@ func (m MockProductUseCase) GetProductByCategory(category string) error {
 	return nil
 }
 
-func (m MockProductUseCase) UpdateProductByUUID(uuid string, product dto.RequestProduct) error {
-	if m.WantErr != nil && strings.EqualFold("errUpdateProductByUUID", m.WantErr.Error()) {
+func (m MockProductUseCase) UpdateProductByID(uuid string, product dto.RequestProduct) error {
+	if m.WantErr != nil && strings.EqualFold("errUpdateProductByID", m.WantErr.Error()) {
 		return m.WantErr
 	}
 	return nil
 }
 
-func (m MockProductUseCase) DeleteProductByUUID(uuid string) error {
-	if m.WantErr != nil && strings.EqualFold("errDeleteProductByUUID", m.WantErr.Error()) {
+func (m MockProductUseCase) DeleteProductByID(uuid string) error {
+	if m.WantErr != nil && strings.EqualFold("errDeleteProductByID", m.WantErr.Error()) {
 		return m.WantErr
 	}
 	return nil

@@ -12,11 +12,11 @@ type MockProductRepository struct {
 	WantErr     error
 }
 
-func (m MockProductRepository) GetProductByUUID(uuid string) (*dto.ProductDB, error) {
-	if m.WantErr != nil && strings.EqualFold("errGetProductByUUID", m.WantErr.Error()) {
+func (m MockProductRepository) GetProductByID(uuid string) (*dto.ProductDB, error) {
+	if m.WantErr != nil && strings.EqualFold("errGetProductByID", m.WantErr.Error()) {
 		return nil, m.WantErr
 	}
-	if strings.EqualFold(m.WantOutNull, "nilGetProductByUUID") {
+	if strings.EqualFold(m.WantOutNull, "nilGetProductByID") {
 		return nil, nil
 	}
 	return m.WantOut, nil
@@ -32,21 +32,21 @@ func (m MockProductRepository) GetProductByCategory(category string) ([]dto.Prod
 	return m.WantOutList, nil
 }
 
-func (m MockProductRepository) UpdateProductByUUID(uuid string, product dto.ProductDB) (*dto.ProductDB, error) {
-	if m.WantErr != nil && strings.EqualFold("errUpdateProductByUUID", m.WantErr.Error()) {
+func (m MockProductRepository) UpdateProductByID(uuid string, product dto.ProductDB) (*dto.ProductDB, error) {
+	if m.WantErr != nil && strings.EqualFold("errUpdateProductByID", m.WantErr.Error()) {
 		return nil, m.WantErr
 	}
-	if strings.EqualFold(m.WantOutNull, "nilUpdateProductByUUID") {
+	if strings.EqualFold(m.WantOutNull, "nilUpdateProductByID") {
 		return nil, nil
 	}
 	return m.WantOut, nil
 }
 
-func (m MockProductRepository) DeleteProductByUUID(uuid string) error {
-	if m.WantErr != nil && strings.EqualFold("errDeleteProductByUUID", m.WantErr.Error()) {
+func (m MockProductRepository) DeleteProductByID(uuid string) error {
+	if m.WantErr != nil && strings.EqualFold("errDeleteProductByID", m.WantErr.Error()) {
 		return m.WantErr
 	}
-	if strings.EqualFold(m.WantOutNull, "nilDeleteProductByUUID") {
+	if strings.EqualFold(m.WantOutNull, "nilDeleteProductByID") {
 		return nil
 	}
 	return nil

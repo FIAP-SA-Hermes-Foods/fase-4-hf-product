@@ -24,6 +24,31 @@ func (h *handlerGRPC) Handler() *handlerGRPC {
 	return h
 }
 
+func (h *handlerGRPC) GetProductByID(ctx context.Context, req *cp.GetProductByIDRequest) (*cp.GetProductByIDResponse, error) {
+	c, err := h.app.GetProductByID(req.Uuid)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if c == nil {
+		return nil, nil
+	}
+
+	out := &cp.GetProductByIDResponse{
+		Uuid:          c.UUID,
+		Name:          c.Name,
+		Category:      c.Category,
+		Image:         c.Image,
+		Description:   c.Description,
+		Price:         float32(c.Price),
+		CreatedAt:     c.CreatedAt,
+		DeactivatedAt: c.DeactivatedAt,
+	}
+
+	return out, nil
+}
+
 func (h *handlerGRPC) CreateProduct(ctx context.Context, req *cp.CreateProductRequest) (*cp.CreateProductResponse, error) {
 	input := dto.RequestProduct{
 		Name:          req.Name,
@@ -60,7 +85,6 @@ func (h *handlerGRPC) CreateProduct(ctx context.Context, req *cp.CreateProductRe
 }
 
 func (h *handlerGRPC) GetProductByCategory(ctx context.Context, req *cp.GetProductByCategoryRequest) (*cp.GetProductByCategoryResponse, error) {
-
 	c, err := h.app.GetProductByCategory(req.Category)
 
 	if err != nil {
@@ -106,7 +130,7 @@ func (h *handlerGRPC) UpdateProduct(ctx context.Context, req *cp.UpdateProductRe
 		DeactivatedAt: req.DeactivatedAt,
 	}
 
-	c, err := h.app.UpdateProductByUUID(req.Uuid, input)
+	c, err := h.app.UpdateProductByID(req.Uuid, input)
 
 	if err != nil {
 		return nil, err
@@ -128,16 +152,15 @@ func (h *handlerGRPC) UpdateProduct(ctx context.Context, req *cp.UpdateProductRe
 	}
 
 	return out, nil
-
 }
 
-func (h *handlerGRPC) DeleteProductByUUID(ctx context.Context, req *cp.DeleteProductByUUIDRequest) (*cp.DeleteProductByUUIDResponse, error) {
+func (h *handlerGRPC) DeleteProductByID(ctx context.Context, req *cp.DeleteProductByIDRequest) (*cp.DeleteProductByIDResponse, error) {
 
-	if err := h.app.DeleteProductByUUID(req.Uuid); err != nil {
+	if err := h.app.DeleteProductByID(req.Uuid); err != nil {
 		return nil, err
 	}
 
-	out := &cp.DeleteProductByUUIDResponse{
+	out := &cp.DeleteProductByIDResponse{
 		Message: "OK",
 	}
 

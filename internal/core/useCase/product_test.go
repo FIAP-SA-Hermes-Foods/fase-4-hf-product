@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-// go test -v -failfast -run ^Test_GetProductByUUID$
-func Test_GetProductByUUID(t *testing.T) {
+// go test -v -failfast -run ^Test_GetProductByID$
+func Test_GetProductByID(t *testing.T) {
 	type args struct {
 		uuid string
 	}
@@ -36,7 +36,7 @@ func Test_GetProductByUUID(t *testing.T) {
 	for _, tc := range tests {
 		uc := NewProductUseCase()
 		t.Run(tc.name, func(*testing.T) {
-			err := uc.GetProductByUUID(tc.args.uuid)
+			err := uc.GetProductByID(tc.args.uuid)
 			if (!tc.wantErr) && err != nil {
 				log.Panicf("unexpected error: %v", err)
 			}
@@ -138,8 +138,8 @@ func Test_SaveProduct(t *testing.T) {
 	}
 }
 
-// go test -v -failfast -run ^Test_UpdateProductByUUID$
-func Test_UpdateProductByUUID(t *testing.T) {
+// go test -v -failfast -run ^Test_UpdateProductByID$
+func Test_UpdateProductByID(t *testing.T) {
 
 	type args struct {
 		uuid       string
@@ -190,7 +190,7 @@ func Test_UpdateProductByUUID(t *testing.T) {
 	for _, tc := range tests {
 		uc := NewProductUseCase()
 		t.Run(tc.name, func(*testing.T) {
-			err := uc.UpdateProductByUUID(tc.args.uuid, tc.args.reqProduct)
+			err := uc.UpdateProductByID(tc.args.uuid, tc.args.reqProduct)
 			if (!tc.wantErr) && err != nil {
 				log.Panicf("unexpected error: %v", err)
 			}
@@ -198,8 +198,8 @@ func Test_UpdateProductByUUID(t *testing.T) {
 	}
 }
 
-// go test -v -failfast -run ^Test_UpdateProductByUUID$
-func Test_DeleteProductByUUID(t *testing.T) {
+// go test -v -failfast -run ^Test_UpdateProductByID$
+func Test_DeleteProductByID(t *testing.T) {
 	type args struct {
 		uuid string
 	}
@@ -228,7 +228,7 @@ func Test_DeleteProductByUUID(t *testing.T) {
 	for _, tc := range tests {
 		uc := NewProductUseCase()
 		t.Run(tc.name, func(*testing.T) {
-			err := uc.DeleteProductByUUID(tc.args.uuid)
+			err := uc.DeleteProductByID(tc.args.uuid)
 			if (!tc.wantErr) && err != nil {
 				log.Panicf("unexpected error: %v", err)
 			}

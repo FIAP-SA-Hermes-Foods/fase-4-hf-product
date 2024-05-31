@@ -29,7 +29,7 @@ func (p productUseCase) SaveProduct(reqProduct dto.RequestProduct) error {
 	return nil
 }
 
-func (p productUseCase) UpdateProductByUUID(uuid string, reqProduct dto.RequestProduct) error {
+func (p productUseCase) UpdateProductByID(uuid string, reqProduct dto.RequestProduct) error {
 	if len(uuid) < 1 {
 		return errors.New("the id is not valid for consult")
 	}
@@ -45,7 +45,7 @@ func (p productUseCase) UpdateProductByUUID(uuid string, reqProduct dto.RequestP
 	return nil
 }
 
-func (p productUseCase) GetProductByUUID(uuid string) error {
+func (p productUseCase) GetProductByID(uuid string) error {
 	if len(uuid) < 1 {
 		return errors.New("the id is not valid for consult")
 	}
@@ -64,7 +64,7 @@ func (p productUseCase) GetProductByCategory(category string) error {
 	return nil
 }
 
-func (p productUseCase) DeleteProductByUUID(uuid string) error {
+func (p productUseCase) DeleteProductByID(uuid string) error {
 	if len(uuid) < 1 {
 		return errors.New("the id is not valid for consult")
 	}
